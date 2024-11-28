@@ -32,17 +32,11 @@ void SERCOM2_Handler()
 
 void preTransmission()
 {
-#ifdef LED_YELLOW_PIN
-    digitalWrite(MAX485_RE_NEG, 1);
-#endif
     digitalWrite(MAX485_DIR, 1);
 }
 
 void postTransmission()
 {
-#ifdef LED_YELLOW_PIN
-    digitalWrite(MAX485_RE_NEG, 0);
-#endif
     digitalWrite(MAX485_DIR, 0);
 }
 
@@ -92,41 +86,41 @@ bool modbusInitSerial(HardwareSerial &serial)
     switch (knx.paramByte(MOD_BusBaudrateSelection))
     {
         case 0:
-            SERIAL_DEBUG.println("Baudrate: 1200kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 1200kBit/s");
             return modbusParitySerial(1200, serial);
 
             break;
         case 1:
-            SERIAL_DEBUG.println("Baudrate: 2400kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 2400kBit/s");
             return modbusParitySerial(2400, serial);
             break;
         case 2:
-            SERIAL_DEBUG.println("Baudrate: 4800kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 4800kBit/s");
             return modbusParitySerial(4800, serial);
             break;
         case 3:
-            SERIAL_DEBUG.println("Baudrate: 9600kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 9600kBit/s");
             return modbusParitySerial(9600, serial);
             break;
         case 4:
-            SERIAL_DEBUG.println("Baudrate: 19200kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 19200kBit/s");
             return modbusParitySerial(19200, serial);
             break;
         case 5:
-            SERIAL_DEBUG.println("Baudrate: 38400kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 38400kBit/s");
             return modbusParitySerial(38400, serial);
             break;
         case 6:
-            SERIAL_DEBUG.println("Baudrate: 56000kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 56000kBit/s");
             return modbusParitySerial(56000, serial);
             break;
         case 7:
-            SERIAL_DEBUG.println("Baudrate: 115200kBit/s");
+            //SERIAL_DEBUG.println("Baudrate: 115200kBit/s");
             return modbusParitySerial(115200, serial);
             break;
         default:
-            SERIAL_DEBUG.print("Baudrate: Error: ");
-            SERIAL_DEBUG.println(knx.paramByte(MOD_BusBaudrateSelection));
+            //SERIAL_DEBUG.print("Baudrate: Error: ");
+            //SERIAL_DEBUG.println(knx.paramByte(MOD_BusBaudrateSelection));
             return false;
             break;
     }

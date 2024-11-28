@@ -116,53 +116,39 @@ void Modbus::processMeter(uint8_t channel, float newValue)
 {
     if (knx.paramByte(getPar(MOD_CHModBusSelectionVirtualZaehler1, channel))) // Zähler aktiv
     {
-#ifdef Serial_Debug_Modbus
-        SERIAL_DEBUG.print("vZ1 = Aktiv |");
-#endif
+        //// SERIAL_DEBUG.print("vZ1 = Aktiv |");
         switch (knx.paramByte(getPar(MOD_CHModBusTypZaehler1, channel)))
         {
             // Leistung
             case 0:
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print(" Pwr |");
-#endif
+                //// SERIAL_DEBUG.print(" Pwr |");
                 if (knx.paramByte(getPar(MOD_CHModBusMathOperationVirtualZaehler1, channel))) // Vorzeichen = "-"
                 {
                     powerZ1 = powerZ1 - newValue;
-#ifdef Serial_Debug_Modbus
-                    SERIAL_DEBUG.print(" - | ");
-                    SERIAL_DEBUG.println(powerZ1);
-#endif
+                    //// SERIAL_DEBUG.print(" - | ");
+                    //// SERIAL_DEBUG.println(powerZ1);
                 }
                 else
                 {
                     powerZ1 = powerZ1 + newValue;
-#ifdef Serial_Debug_Modbus
-                    SERIAL_DEBUG.print(" + | ");
-                    SERIAL_DEBUG.println(powerZ1);
-#endif
+                    //// SERIAL_DEBUG.print(" + | ");
+                    //// SERIAL_DEBUG.println(powerZ1);
                 }
                 break;
             // Zählerstand
             case 1:
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print(" Count |");
-#endif
+                //// SERIAL_DEBUG.print(" Count |");
                 if (knx.paramByte(getPar(MOD_CHModBusMathOperationVirtualZaehler1, channel))) // Vorzeichen = "-"
                 {
                     counterZ1 = counterZ1 - newValue;
-#ifdef Serial_Debug_Modbus
-                    SERIAL_DEBUG.print(" - | ");
-                    SERIAL_DEBUG.println(counterZ1);
-#endif
+                    //// SERIAL_DEBUG.print(" - | ");
+                    //// SERIAL_DEBUG.println(counterZ1);
                 }
                 else
                 {
                     counterZ1 = counterZ1 + newValue;
-#ifdef Serial_Debug_Modbus
-                    SERIAL_DEBUG.print(" + | ");
-                    SERIAL_DEBUG.println(counterZ1);
-#endif
+                    //// SERIAL_DEBUG.print(" + | ");
+                    //// SERIAL_DEBUG.println(counterZ1);
                 }
                 break;
 
@@ -241,12 +227,10 @@ bool Modbus::readModbus(uint8_t channel, bool readRequest)
     switch (knx.paramByte(getPar(MOD_CHModBusBusDirection, channel)))
     {
         case 0: // KNX -> modbus
-#ifdef Serial_Debug_Modbus_Min
-            if (readRequest)
-            {
-                SERIAL_DEBUG.println("KNX->Modbus ");
-            }
-#endif
+            // if (readRequest)
+            //{
+            ////     SERIAL_DEBUG.println("KNX->Modbus ");
+            // }
             if (_readyToSend[channel])
             {
                 _readyToSend[channel] = false;
@@ -280,16 +264,12 @@ uint8_t Modbus::sendProtocol(uint8_t channel, uint16_t registerAddr, uint16_t u1
 {
     if (0x06 == knx.paramByte(getPar(MOD_CHModBusWriteWordFunktion, channel)))
     {
-#ifdef Serial_Debug_Modbus
-        SERIAL_DEBUG.print(" 0x06 ");
-#endif
+        //// SERIAL_DEBUG.print(" 0x06 ");
         return writeSingleRegister(registerAddr, u16value);
     }
     else if (0x10 == knx.paramByte(getPar(MOD_CHModBusWriteWordFunktion, channel)))
     {
-#ifdef Serial_Debug_Modbus
-        SERIAL_DEBUG.print(" 0x10 ");
-#endif
+        //// SERIAL_DEBUG.print(" 0x10 ");
         setTransmitBuffer(0, u16value);
         return writeMultipleRegisters(registerAddr, 1);
     }
@@ -298,38 +278,32 @@ uint8_t Modbus::sendProtocol(uint8_t channel, uint16_t registerAddr, uint16_t u1
 
 void Modbus::printDebugResult(const char *dpt, uint16_t registerAddr, uint8_t result)
 {
-#ifdef Serial_Debug_Modbus
-    SERIAL_DEBUG.print(" DPT");
-    SERIAL_DEBUG.print(dpt);
-    SERIAL_DEBUG.print(" ");
-    SERIAL_DEBUG.print(registerAddr);
-    SERIAL_DEBUG.print(" ");
-#endif
-#ifdef Serial_Debug_Modbus_Min
+    //// SERIAL_DEBUG.print(" DPT");
+    //// SERIAL_DEBUG.print(dpt);
+    //// SERIAL_DEBUG.print(" ");
+    //// SERIAL_DEBUG.print(registerAddr);
+    //// SERIAL_DEBUG.print(" ");
     switch (result)
     {
         case ku8MBSuccess:
-            SERIAL_DEBUG.println("DONE");
+            //// SERIAL_DEBUG.println("DONE");
             break;
-#ifdef Serial_Debug_Modbus
         case ku8MBInvalidSlaveID:
-            SERIAL_DEBUG.println("ERROR: Invalid Slave ID");
+            //// SERIAL_DEBUG.println("ERROR: Invalid Slave ID");
             break;
         case ku8MBInvalidFunction:
-            SERIAL_DEBUG.println("ERROR: Invalid Function");
+            //// SERIAL_DEBUG.println("ERROR: Invalid Function");
             break;
         case ku8MBResponseTimedOut:
-            SERIAL_DEBUG.println("ERROR: Response Timed Out");
+            //// SERIAL_DEBUG.println("ERROR: Response Timed Out");
             break;
         case ku8MBInvalidCRC:
-            SERIAL_DEBUG.println("ERROR: Invalid CRC");
+            //// SERIAL_DEBUG.println("ERROR: Invalid CRC");
             break;
-#endif
         default:
-            SERIAL_DEBUG.println("ERROR");
+            //// SERIAL_DEBUG.println("ERROR");
             break;
     }
-#endif
 }
 
 bool Modbus::knxToModbus(uint8_t dpt, uint8_t channel, bool readRequest)
@@ -338,10 +312,8 @@ bool Modbus::knxToModbus(uint8_t dpt, uint8_t channel, bool readRequest)
     uint16_t registerAddr = adjustRegisterAddress(knx.paramInt(getPar(MOD_CHModbusRegister, channel)));
     GroupObject iKo = knx.getGroupObject(getCom(MOD_KoGO_BASE_, channel));
 
-#ifdef Serial_Debug_Modbus_Min
-    SERIAL_DEBUG.print("KNX: CH");
-    SERIAL_DEBUG.print(channel + 1);
-#endif
+    ////SERIAL_DEBUG.print("KNX: CH");
+    ////SERIAL_DEBUG.print(channel + 1);
 
     //*****************************************************************************************************************************************
     //*****************************************  DPT 1.001 ************************************************************************************
@@ -355,9 +327,7 @@ bool Modbus::knxToModbus(uint8_t dpt, uint8_t channel, bool readRequest)
             // Bit Register
             if (knx.paramByte(getPar(MOD_CHModBusInputTypDpt1, channel)) == 0)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print(" 0x05 ");
-#endif
+                ////SERIAL_DEBUG.print(" 0x05 ");
                 result = writeSingleCoil(registerAddr, v);
             }
             // Bit in Word
@@ -564,14 +534,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
     uint8_t result;
     uint16_t registerAddr = adjustRegisterAddress(knx.paramInt(getPar(MOD_CHModbusRegister, channel)));
 
-#ifdef Serial_Debug_Modbus
     if (readRequest)
     {
-        SERIAL_DEBUG.print("Modbus->KNX ");
-        SERIAL_DEBUG.print(registerAddr);
-        SERIAL_DEBUG.print(" ");
+        // SERIAL_DEBUG.print("Modbus->KNX ");
+        // SERIAL_DEBUG.print(registerAddr);
+        // SERIAL_DEBUG.print(" ");
     }
-#endif
 
     {
         uint32_t lCycle = knx.paramInt(getPar(MOD_CHModBusSendDelay, channel)) * 1000;
@@ -589,10 +557,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 1:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT1 |");
-#endif
-                // clear Responsebuffer before revicing a new message
+                // SERIAL_DEBUG.print("DPT1 |");
+                //  clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
 
                 bool v = false;
@@ -603,16 +569,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                     switch (knx.paramByte(getPar(MOD_CHModBusReadBitFunktion, channel))) // Choose Modbus Funktion (0x01 readHoldingRegisters ODER 0x02 readInputRegisters)
                     {
                         case 1: // 0x01 Lese Coils
-#ifdef Serial_Debug_Modbus
-                            SERIAL_DEBUG.print(" 0x01 ");
-#endif
+                            // SERIAL_DEBUG.print(" 0x01 ");
                             result = readCoils(registerAddr, 1);
                             break;
 
                         case 2:
-#ifdef Serial_Debug_Modbus
-                            SERIAL_DEBUG.print(" 0x02 ");
-#endif
+                            // SERIAL_DEBUG.print(" 0x02 ");
                             result = readDiscreteInputs(registerAddr, 1);
                             break;
                         default: // default Switch(ModBusReadBitFunktion)
@@ -629,16 +591,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                     switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                     {
                         case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                            SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                            // SERIAL_DEBUG.print(" 0x03 ");
                             result = readHoldingRegisters(registerAddr, 1);
                             break; // Ende 0x03
 
                         case 4:
-#ifdef Serial_Debug_Modbus
-                            SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                            // SERIAL_DEBUG.print(" 0x04 ");
                             result = readInputRegisters(registerAddr, 1);
                             break;
                         default: // Error Switch (0x03 & 0x04)
@@ -672,9 +630,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueBool = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v);
-#endif
+                    // SERIAL_DEBUG.println(v);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -682,10 +638,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 }
                 else // Fehler bei der Übertragung
                 {
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.print("ERROR: ");
-                    SERIAL_DEBUG.println(result, HEX);
-#endif
+                    // SERIAL_DEBUG.print("ERROR: ");
+                    // SERIAL_DEBUG.println(result, HEX);
                     ErrorHandling(channel);
 
                     return false;
@@ -698,9 +652,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 4:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT5.001 |");
-#endif
+                // SERIAL_DEBUG.print("DPT5.001 |");
 
                 // clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
@@ -711,16 +663,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                 {
                     case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                        // SERIAL_DEBUG.print(" 0x03 ");
                         result = readHoldingRegisters(registerAddr, 1);
                         break; // Ende 0x03
 
                     case 4:
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                        // SERIAL_DEBUG.print(" 0x04 ");
                         result = readInputRegisters(registerAddr, 1);
                         break;
                     default: // Error Switch (0x03 & 0x04)
@@ -740,10 +688,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         case 3: // frei Wählbar
                             v = (getResponseBuffer(0) >> (knx.paramByte(getPar(MOD_CHModBusOffsetRight5, channel))));
                             v = v & (knx.paramByte(getPar(MOD_CHModbusCountBitsDPT56, channel)));
-#ifdef Serial_Debug_Modbus
-                            SERIAL_DEBUG.print(v, BIN);
-                            SERIAL_DEBUG.print(" ");
-#endif
+                            // SERIAL_DEBUG.print(v, BIN);
+                            // SERIAL_DEBUG.print(" ");
                             break;
                         default:
                             return false;
@@ -760,9 +706,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueUint8_t = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v);
-#endif
+                    // SERIAL_DEBUG.println(v);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -770,10 +714,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 }
                 else // Fehler in der Übtragung
                 {
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.print("ERROR: ");
-                    SERIAL_DEBUG.println(result, HEX);
-#endif
+                    // SERIAL_DEBUG.print("ERROR: ");
+                    // SERIAL_DEBUG.println(result, HEX);
                     ErrorHandling(channel);
 
                     return false;
@@ -786,9 +728,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 5:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT5 |");
-#endif
+                // SERIAL_DEBUG.print("DPT5 |");
 
                 // clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
@@ -799,16 +739,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                 {
                     case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                        // SERIAL_DEBUG.print(" 0x03 ");
                         result = readHoldingRegisters(registerAddr, 1);
                         break; // Ende 0x03
 
                     case 4:
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                        // SERIAL_DEBUG.print(" 0x04 ");
                         result = readInputRegisters(registerAddr, 1);
                         break;
                     default: // Error Switch (0x03 & 0x04)
@@ -828,8 +764,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         case 3: // frei Wählbar
                             v = (getResponseBuffer(0) >> (knx.paramByte(getPar(MOD_CHModBusOffsetRight5, channel))));
                             v = v & (knx.paramByte(getPar(MOD_CHModbusCountBitsDPT56, channel)));
-                            SERIAL_DEBUG.print(v, BIN);
-                            SERIAL_DEBUG.print(" ");
+                            // SERIAL_DEBUG.print(v, BIN);
+                            // SERIAL_DEBUG.print(" ");
                             break;
                         default:
                             return false;
@@ -846,9 +782,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueUint8_t = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v);
-#endif
+                    // SERIAL_DEBUG.println(v);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -856,10 +790,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 }
                 else // Fehler in der Übtragung
                 {
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.print("ERROR: ");
-                    SERIAL_DEBUG.println(result, HEX);
-#endif
+                    // SERIAL_DEBUG.print("ERROR: ");
+                    // SERIAL_DEBUG.println(result, HEX);
 
                     ErrorHandling(channel);
 
@@ -873,10 +805,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 7:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT7 |");
-#endif
-                // clear Responsebuffer before revicing a new message
+                // SERIAL_DEBUG.print("DPT7 |");
+                //  clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
 
                 uint16_t v;
@@ -885,12 +815,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                 {
                     case 3: // 0x03 Lese holding registers
-                        SERIAL_DEBUG.print(" 0x03 ");
+                        // SERIAL_DEBUG.print(" 0x03 ");
                         result = readHoldingRegisters(registerAddr, 1);
                         break; // Ende 0x03
 
                     case 4:
-                        SERIAL_DEBUG.print(" 0x04 ");
+                        // SERIAL_DEBUG.print(" 0x04 ");
                         result = readInputRegisters(registerAddr, 1);
                         break;
                     default: // Error Switch (0x03 & 0x04)
@@ -924,9 +854,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueUint16_t = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v);
-#endif
+                    // SERIAL_DEBUG.println(v);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -934,10 +862,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 }
                 else // Fehler in der Übtragung
                 {
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.print("ERROR: ");
-                    SERIAL_DEBUG.println(result, HEX);
-#endif
+                    // SERIAL_DEBUG.print("ERROR: ");
+                    // SERIAL_DEBUG.println(result, HEX);
                     ErrorHandling(channel);
 
                     return false;
@@ -950,10 +876,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 8:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT8 |");
-#endif
-                // clear Responsebuffer before revicing a new message
+                // SERIAL_DEBUG.print("DPT8 |");
+                //  clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
 
                 int16_t v;
@@ -962,12 +886,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                 {
                     case 3: // 0x03 Lese holding registers
-                        SERIAL_DEBUG.print(" 0x03 ");
+                        // SERIAL_DEBUG.print(" 0x03 ");
                         result = readHoldingRegisters(registerAddr, 1);
                         break; // Ende 0x03
 
                     case 4:
-                        SERIAL_DEBUG.print(" 0x04 ");
+                        // SERIAL_DEBUG.print(" 0x04 ");
                         result = readInputRegisters(registerAddr, 1);
                         break;
                     default: // Error Switch (0x03 & 0x04)
@@ -990,10 +914,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueInt16_t = v;
                     }
 
-// Serial Output
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v);
-#endif
+                    // Serial Output
+                    // SERIAL_DEBUG.println(v);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -1001,10 +923,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 }
                 else // Fehler in der Übtragung
                 {
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.print("ERROR: ");
-                    SERIAL_DEBUG.println(result, HEX);
-#endif
+                    // SERIAL_DEBUG.print("ERROR: ");
+                    // SERIAL_DEBUG.println(result, HEX);
                     ErrorHandling(channel);
 
                     return false;
@@ -1017,9 +937,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 9:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT9 |");
-#endif
+                // SERIAL_DEBUG.print("DPT9 |");
 
                 // clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
@@ -1030,16 +948,12 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                 {
                     case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                        // SERIAL_DEBUG.print(" 0x03 ");
                         result = readHoldingRegisters(registerAddr, 1);
                         break; // Ende 0x03
 
                     case 4:
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                        // SERIAL_DEBUG.print(" 0x04 ");
                         result = readInputRegisters(registerAddr, 1);
                         break;
                     default: // Error Switch (0x03 & 0x04)
@@ -1067,11 +981,9 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                                 return false;
                         }
 
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(uraw);
-                        SERIAL_DEBUG.print(" ");
-#endif
-                        //  ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // SERIAL_DEBUG.print(uraw);
+                        // SERIAL_DEBUG.print(" ");
+                        //   ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
                         v = uraw / (float)knx.paramInt(getPar(MOD_CHModBuscalculationValueDiff, channel));
                         v = v + (int16_t)knx.paramInt(getPar(MOD_CHModBuscalculationValueAdd, channel));
                     }
@@ -1093,11 +1005,9 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                             default:
                                 return false;
                         }
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print(sraw);
-                        SERIAL_DEBUG.print(" ");
-#endif
-                        //  ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // SERIAL_DEBUG.print(sraw);
+                        // SERIAL_DEBUG.print(" ");
+                        //   ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
                         v = sraw / (float)knx.paramInt(getPar(MOD_CHModBuscalculationValueDiff, channel));
                         v = v + (int16_t)knx.paramInt(getPar(MOD_CHModBuscalculationValueAdd, channel));
                     }
@@ -1113,10 +1023,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValue = v;
                     }
 
-// Serial Output
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v, 2);
-#endif
+                    // Serial Output
+                    // SERIAL_DEBUG.println(v, 2);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -1124,10 +1032,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 }
                 else // Fehler in der Übtragung
                 {
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.print("ERROR: ");
-                    SERIAL_DEBUG.println(result, HEX);
-#endif
+                    // SERIAL_DEBUG.print("ERROR: ");
+                    // SERIAL_DEBUG.println(result, HEX);
                     ErrorHandling(channel);
 
                     return false;
@@ -1140,9 +1046,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 12:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT12 ");
-#endif
+                // SERIAL_DEBUG.print("DPT12 ");
 
                 // clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
@@ -1153,24 +1057,18 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusWordTyp12, channel))) // Choose Word Register OR Double Word Register
                 {
                     case 0: // Word Register
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print("| Word ");
-#endif
-                        // Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
+                        // SERIAL_DEBUG.print("| Word ");
+                        //  Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
                         switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                         {
                             case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x03 ");
                                 result = readHoldingRegisters(registerAddr, 1);
                                 break;
 
                             case 4:
 
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x04 ");
                                 result = readInputRegisters(registerAddr, 1);
                                 break;
                             default:
@@ -1201,10 +1099,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         }
                         else // Fehler
                         {
-#ifdef Serial_Debug_Modbus_Min
-                            SERIAL_DEBUG.print("ERROR: ");
-                            SERIAL_DEBUG.println(result, HEX);
-#endif
+                            // SERIAL_DEBUG.print("ERROR: ");
+                            // SERIAL_DEBUG.println(result, HEX);
                             ErrorHandling(channel);
 
                             return false;
@@ -1212,23 +1108,17 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
 
                         break;
                     case 1: // Double Word Register
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print("| Double Word ");
-#endif
-                        // Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
+                        // SERIAL_DEBUG.print("| Double Word ");
+                        //  Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
                         switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                         {
                             case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x03 ");
                                 result = readHoldingRegisters(registerAddr, 2);
                                 break;
 
                             case 4:
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x04 ");
                                 result = readInputRegisters(registerAddr, 2);
                                 break;
                             default:
@@ -1254,11 +1144,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         }
                         else // Fehler
                         {
-#ifdef Serial_Debug_Modbus_Min
-                            SERIAL_DEBUG.print("ERROR: ");
-                            SERIAL_DEBUG.println(result, HEX);
-
-#endif
+                            // SERIAL_DEBUG.print("ERROR: ");
+                            // SERIAL_DEBUG.println(result, HEX);
 
                             ErrorHandling(channel);
 
@@ -1283,9 +1170,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueUint32_t = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v, 2);
-#endif
+                    // SERIAL_DEBUG.println(v, 2);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -1295,7 +1180,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                     processMeter(channel, v);
                 }
 
-            }      // ENDE
+            } // ENDE
             break; // Ende PDT12
         //*****************************************************************************************************************************************
         //*****************************************  DPT 13 ***************************************************************************************
@@ -1303,9 +1188,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
         case 13:
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT13 ");
-#endif
+                // SERIAL_DEBUG.print("DPT13 ");
 
                 // clear Responsebuffer before revicing a new message
                 clearResponseBuffer();
@@ -1316,24 +1199,18 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusWordTyp13, channel))) // Choose Word Register OR Double Word Register
                 {
                     case 0: // Word Register
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print("| Word ");
-#endif
-                        // Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
+                        // SERIAL_DEBUG.print("| Word ");
+                        //  Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
                         switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                         {
                             case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x03 ");
                                 result = readHoldingRegisters(registerAddr, 1);
                                 break;
 
                             case 4:
 
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x04 ");
                                 result = readInputRegisters(registerAddr, 1);
                                 break;
                             default:
@@ -1360,10 +1237,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         }
                         else
                         {
-#ifdef Serial_Debug_Modbus_Min
-                            SERIAL_DEBUG.print("ERROR: ");
-                            SERIAL_DEBUG.println(result, HEX);
-#endif
+                            // SERIAL_DEBUG.print("ERROR: ");
+                            // SERIAL_DEBUG.println(result, HEX);
                             ErrorHandling(channel);
 
                             return false;
@@ -1371,23 +1246,17 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
 
                         break;
                     case 1: // Double Word Register
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print("| Double Word ");
-#endif
-                        // Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
+                        // SERIAL_DEBUG.print("| Double Word ");
+                        //  Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
                         switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                         {
                             case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x03 ");
                                 result = readHoldingRegisters(registerAddr, 2);
                                 break;
 
                             case 4:
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x04 ");
                                 result = readInputRegisters(registerAddr, 2);
                                 break;
                             default:
@@ -1413,11 +1282,9 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         }
                         else
                         {
-#ifdef Serial_Debug_Modbus_Min
-                            SERIAL_DEBUG.print("ERROR: ");
-                            SERIAL_DEBUG.println(result, HEX);
+                            // SERIAL_DEBUG.print("ERROR: ");
+                            // SERIAL_DEBUG.println(result, HEX);
 
-#endif
                             ErrorHandling(channel);
 
                             return false;
@@ -1440,9 +1307,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValueInt32_t = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v, 2);
-#endif
+                    // SERIAL_DEBUG.println(v, 2);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -1452,7 +1317,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                     processMeter(channel, v);
                 }
 
-            }      // ENDE
+            } // ENDE
             break; // Ende PDT13
 
         //*****************************************************************************************************************************************
@@ -1462,9 +1327,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
 
             if (readRequest)
             {
-#ifdef Serial_Debug_Modbus
-                SERIAL_DEBUG.print("DPT14 ");
-#endif
+                // SERIAL_DEBUG.print("DPT14 ");
 
                 // clear Responsebuffer before receiving a new message
                 clearResponseBuffer();
@@ -1475,24 +1338,18 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                 switch (knx.paramByte(getPar(MOD_CHModBusWordTyp14, channel))) // Choose Word Register OR Double Word Register
                 {
                     case 0: // Word Register
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print("| Word ");
-#endif
-                        // Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
+                        // SERIAL_DEBUG.print("| Word ");
+                        //  Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
                         switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                         {
                             case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x03 ");
                                 result = readHoldingRegisters(registerAddr, 1);
                                 break;
 
                             case 4:
 
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x04 ");
                                 result = readInputRegisters(registerAddr, 1);
                                 break;
                             default:
@@ -1519,11 +1376,9 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                                     default:
                                         return false;
                                 }
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(uraw);
-                                SERIAL_DEBUG.print(" ");
-#endif
-                                //  ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                // SERIAL_DEBUG.print(uraw);
+                                // SERIAL_DEBUG.print(" ");
+                                //   ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 v = uraw / (float)knx.paramInt(getPar(MOD_CHModBuscalculationValueDiff, channel));
                                 v = v + (int16_t)knx.paramInt(getPar(MOD_CHModBuscalculationValueAdd, channel));
                             }
@@ -1545,20 +1400,16 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                                     default:
                                         return false;
                                 }
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(sraw);
-#endif
-                                //  ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                // SERIAL_DEBUG.print(sraw);
+                                //   ************************ MUSS NOCH GEPRÜFT WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 v = sraw / (float)knx.paramInt(getPar(MOD_CHModBuscalculationValueDiff, channel));
                                 v = v + (int16_t)knx.paramInt(getPar(MOD_CHModBuscalculationValueAdd, channel));
                             }
                         }
                         else
                         {
-#ifdef Serial_Debug_Modbus_Min
-                            SERIAL_DEBUG.print("ERROR: ");
-                            SERIAL_DEBUG.println(result, HEX);
-#endif
+                            // SERIAL_DEBUG.print("ERROR: ");
+                            // SERIAL_DEBUG.println(result, HEX);
                             ErrorHandling(channel);
 
                             return false;
@@ -1566,23 +1417,17 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
 
                         break;
                     case 1: // Double Word Register
-#ifdef Serial_Debug_Modbus
-                        SERIAL_DEBUG.print("| Double Word ");
-#endif
-                        // Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
+                        // SERIAL_DEBUG.print("| Double Word ");
+                        //  Choose Modbus Funktion (0x03 readHoldingRegisters ODER 0x04 readInputRegisters)
                         switch (knx.paramByte(getPar(MOD_CHModBusReadWordFunktion, channel)))
                         {
                             case 3: // 0x03 Lese holding registers
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x03 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x03 ");
                                 result = readHoldingRegisters(registerAddr, 2);
                                 break;
 
                             case 4:
-#ifdef Serial_Debug_Modbus
-                                SERIAL_DEBUG.print(" 0x04 ");
-#endif
+                                // SERIAL_DEBUG.print(" 0x04 ");
                                 result = readInputRegisters(registerAddr, 2);
                                 break;
                             default:
@@ -1646,10 +1491,8 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         }
                         else
                         {
-#ifdef Serial_Debug_Modbus_Min
-                            SERIAL_DEBUG.print("ERROR: ");
-                            SERIAL_DEBUG.println(result, HEX);
-#endif
+                            // SERIAL_DEBUG.print("ERROR: ");
+                            // SERIAL_DEBUG.println(result, HEX);
 
                             ErrorHandling(channel);
 
@@ -1673,9 +1516,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                         lastSentValue[channel].lValue = v;
                     }
 
-#ifdef Serial_Debug_Modbus_Min
-                    SERIAL_DEBUG.println(v, 2);
-#endif
+                    // SERIAL_DEBUG.println(v, 2);
 
                     // Löscht Fehlerspeicher
                     errorState[channel][0] = false;
@@ -1685,7 +1526,7 @@ bool Modbus::modbusToKnx(uint8_t dpt, uint8_t channel, bool readRequest)
                     processMeter(channel, v);
                 }
 
-            }      // ENDE
+            } // ENDE
             break; // Ende PDT14
 
         default: // all other dpts
