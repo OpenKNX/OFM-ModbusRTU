@@ -1732,3 +1732,6 @@ void Modbus::handleMeters(uint8_t number)
         lastSentPowerZ[number - 1] = powerZ[number - 1];
     }
 }
+
+
+Modbus openknxModbusRTU;
